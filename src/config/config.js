@@ -9,3 +9,5 @@ export const conf = {
     NODEMAILER_GMAIL: String(process.env.GMAIL),
     NODEMAILER_PASSWORD: String(process.env.PASSWORD),
   };
+
+  
