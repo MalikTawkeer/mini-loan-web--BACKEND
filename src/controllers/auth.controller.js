@@ -7,6 +7,7 @@ import { conf } from "../config/config.js";
 import UserModel from "../models/users.model.js";
 
 import registerUserValidationSchema from "../validations/register.validation.js";
+import loginUserValidationSchema from "../validations/login.validation.js";
 
 // import sendEmail from "../../utils/email.sender.js";
 
@@ -31,7 +32,7 @@ const register = async (req, res) => {
   try {
     // VALIDATE USER INPUTS
     await registerUserValidationSchema.validate(req.body, {
-      abortEarly: false, // Validates all fields before throwing an error
+      abortEarly: true, // Validates all fields before throwing an error
     });
 
     const { name, email, password } = req.body;
@@ -59,6 +60,11 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // VALIDATE USER INPUTS
+    await loginUserValidationSchema.validate(req.body, {
+      abortEarly: true, // Validates all fields before throwing an error
+    });
+
     const user = await UserModel.login(email, password);
     if (!user) return res.status(400).json({ msg: "somthing went wrong!" });
 
@@ -68,7 +74,7 @@ const login = async (req, res) => {
     res.cookie("jwt_tkn", token, {
       httpOnly: true, // Accessible only by the web server, not JavaScript on the client-side
       secure: process.env.NODE_ENV === "production", // Use HTTPS in production
-      sameSite: "strict", // Helps prevent CSRF attacks
+	  //sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Helps prevent CSRF attacks
       maxAge: 24 * 60 * 60 * 1000, // Token expiration: 1 day
     });
 
