@@ -58,30 +58,30 @@ const register = async (req, res) => {
 // Login Customer
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
     // VALIDATE USER INPUTS
     await loginUserValidationSchema.validate(req.body, {
       abortEarly: true, // Validates all fields before throwing an error
     });
 
-    const user = await UserModel.login(email, password);
+    const user = await UserModel.login(email, password, role);
     if (!user) return res.status(400).json({ msg: "somthing went wrong!" });
 
     const token = createToken(user);
 
     // Send the token as a cookie
     res.cookie("jwt_tkn", token, {
-      httpOnly: true, // Accessible only by the web server, not JavaScript on the client-side
+      httpOnly: false, // Accessible only by the web server, not JavaScript on the client-side
       secure: process.env.NODE_ENV === "production", // Use HTTPS in production
-	  //sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Helps prevent CSRF attacks
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Helps prevent CSRF attacks
       maxAge: 24 * 60 * 60 * 1000, // Token expiration: 1 day
     });
 
     // Send a success message or user info (without password)
     res.json({
       message: "Login successful",
-      user: { id: user._id, email: user.email, token },
+      user: { id: user._id, email: user?.email, name: user?.name },
     });
   } catch (error) {
     console.log(error, "Error while logging in User");

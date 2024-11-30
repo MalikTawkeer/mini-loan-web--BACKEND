@@ -50,6 +50,7 @@ const submitRepayment = async (req, res) => {
 
     // CHANGE STATUS TO PAID
     repayment.state = "PAID";
+	repayment.amount = amount;
     await repayment.save({ session });
 
     // CHECK IF ALL REPAYMENTS ARE PAID FOR THIS LOAN

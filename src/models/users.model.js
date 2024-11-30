@@ -40,10 +40,10 @@ userSchema.statics.register = async function (name, email, password) {
 };
 
 // *************** Login user *********
-userSchema.statics.login = async function (email, password) {
+userSchema.statics.login = async function (email, password, role) {
   try {
     // Check if the user exists
-    const user = await this.findOne({ email });
+    const user = await this.findOne({ email, role });
     if (!user) {
       throw "Incorrect email";
     }

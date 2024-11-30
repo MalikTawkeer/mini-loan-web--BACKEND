@@ -22,7 +22,9 @@ const createLoan = async (req, res) => {
 // GET ALL USER LOANS
 const getUserLoans = async (req, res) => {
   try {
-    const loans = await LoanModel.find({ user_id: req.user.id });
+    const loans = await LoanModel.find({ user_id: req.user.id }).populate(
+      "repayments"
+    );
 
     res.status(200).json({ loans });
   } catch (error) {
@@ -50,7 +52,7 @@ const generateRepayments = async (loanId, amount, term, session) => {
     });
   }
 
-  await RepaymentModel.insertMany(repayments, { session });
+  return await RepaymentModel.insertMany(repayments, { session });
 };
 
 // ADMIN CAN APPROVE A LOAN
@@ -72,10 +74,18 @@ const approveLoan = async (req, res) => {
     }
 
     loan.state = "APPROVED"; // Change loan state to APPROVED
-    await loan.save({ session });
 
     // Generate repayments after loan approval
-    await generateRepayments(loan._id, loan.amount, loan.term, session);
+    const repayments = await generateRepayments(
+      loan._id,
+      loan.amount,
+      loan.term,
+      session
+    );
+
+    // STORE REPAYMENT IDS INTO repayments ARRAY
+    loan.repayments = repayments.map((item) => item._id);
+    await loan.save({ session });
 
     await session.commitTransaction();
 

@@ -12,6 +12,13 @@ const loanSchema = new mongoose.Schema(
       default: "PENDING",
     },
 
+    repayments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Repayment",
+      },
+    ],
+
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

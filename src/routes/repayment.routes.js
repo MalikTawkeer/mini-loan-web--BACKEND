@@ -14,7 +14,7 @@ const router = e.Router();
 router.post(
   "/loans/repayments/:loanId/:repaymentId",
   authenticateJWT,
-  verifyRole("admin"),
+  verifyRole("customer"),
   submitRepayment
 );
 
