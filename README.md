@@ -1,4 +1,5 @@
 
+Please .env file is also there to get db url.
 ---
 
 # **Mini loan web app Backend**
