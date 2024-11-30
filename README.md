@@ -24,7 +24,7 @@ Backend for managing user and admin functionalities using Express, MongoDB, and 
    ```bash
    npm install
    ```
-3. Create a `.env` file with required variables (e.g., DB_URI, JWT_SECRET).  
+3. Create a `.env` file with required variables (e.g., DB_URL, JWT_SECRET_KEY).  
 4. Start the server:
    ```bash
    nodemon --file-env .env server.js
